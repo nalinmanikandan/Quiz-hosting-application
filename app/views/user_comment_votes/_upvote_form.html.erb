@@ -1,0 +1,6 @@
+<%= form_with(model: [@hotel, @item, @comment, user_comment_vote]) do |form| %>
+  <div>
+      <%= form.submit "Up Vote", :value => "Up Vote", :name => "vote_type" %>
+      <%= form.submit "Down Vote", :value => "Down Vote", :name => "vote_type"  %>
+   </div>
+<% end %>

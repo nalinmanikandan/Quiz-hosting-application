@@ -1,0 +1,9 @@
+<% if @item.errors.any? %>
+<% @item.errors.full_messages.each do |message| %>
+  alert('<%= escape_javascript message %>')
+<% end %>
+$("#new_form").html("<%= escape_javascript render :partial => 'items/form', :locals => {item: @item}%>")
+<% else %>
+  $('#table-body').append('<%= escape_javascript render :partial => 'items/item', :locals => { item: @item } %>')
+  $("#new_form").fadeOut()
+<% end %>

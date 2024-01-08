@@ -1,0 +1,65 @@
+<%= form_with(model: [@hotel, @item], data:{ remote: true}) do |form| %>
+  <% if item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+      <ul>
+        <% item.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <div class="field">
+    <%= form.label "select tags" %><br/>
+    <%= form.select(:tag_ids, Tag.all.collect { |u| [u.hashtag, u.id] }, {}, { :multiple => true, :class => "form-control form-control-lg col-6" }) %>
+  </div>
+  <div class="field all_tag_field">
+    <label>New hashtag</label>
+    <%= form.fields_for :tags do |ff| %>
+      <div>
+        <div class="tag_field">
+          <%= render "tag_form", ff: ff %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <%= link_to_add_row("Add Tag", form, :tags, class: 'btn btn-primary') %>
+  <%= tag_field_data("Add Tag", form, :tags) %>
+  <%= tag_id_data("Add Tag", form, :tags) %>
+
+  <div class="field">
+    <%= form.label :image %>
+    <%= form.file_field :image %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+<script>
+  $('.remove_record').on('click', function (event) {
+      $(this).prev('input[type=hidden]').val('1');
+      $(this).closest('.tag_field').hide();
+      return event.preventDefault();
+  });
+  $('.add_fields').on('click', function (event) {
+      let regexp, time;
+      time = new Date().getTime();
+      regexp = new RegExp($('[name="tag_id_data"]').val(), 'g');
+      $(".all_tag_field").append($('[name="tag_field_data"]').val().replace(regexp, time));
+      return event.preventDefault();
+  });
+</script>

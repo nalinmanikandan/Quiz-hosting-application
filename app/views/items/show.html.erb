@@ -1,0 +1,83 @@
+<p>
+  <strong>Name:</strong>
+  <%= @item.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @item.description %>
+</p>
+<!--  tags-->
+<h4>️tags</h4>
+<ul>
+  <% @item.tags.each do |tag| %>
+    <li><%= tag.hashtag %></li>
+  <% end %>
+</ul>
+
+<%= render 'comments/form', hotel: @hotel, item: @item, comment: @comment %>
+<ul>
+  <% @comments.each do |comment| %>
+    <li>
+      <span><%= comment.message %></span>
+      <span><%= comment.item_id %></span>
+      <br>
+      <span>Upvotes: <%= comment.user_comment_votes.where(:upvote => true).count %> | Down Votes: <%= comment.user_comment_votes.where(:upvote => false).count %></span>
+      <% @comment = comment %>
+      <%= render 'user_comment_votes/upvote_form', user_comment_vote: comment.user_comment_votes.build %>
+      <span><%= link_to 'Edit', edit_hotel_item_comment_path(@hotel, @item, comment) %></span>
+      <span><%= link_to 'Destroy', hotel_item_comment_path(@hotel, @item, comment), method: :delete, data: { confirm: 'Are you sure?' } %></span>
+    </li>
+  <% end %>
+</ul>
+
+
+<% if @item.image.attached? %>
+  <%= image_tag @item.image %>
+<% end %>
+<br/>
+
+<% if current_user.id == @item.user_id %>
+  <%= link_to 'Edit Item', edit_hotel_item_path(@hotel, @item) %> |
+<% end %>
+<%= link_to 'Back to Item list', hotel_items_path(@hotel) %>
+
+<br>
+<h3>Ratings</h3>
+<% @item.ratings.group(:rate).count.each do |key, value| %>
+  <%= key %> star present <%= value %> times
+  <br>
+<% end %>
+<br>
+
+<br>
+<h3>Total Ratings</h3>
+<%= @item.ratings.sum(:rate) %>
+
+<h3>Average Ratings</h3>
+<%= @item.ratings.average(:rate) %>
+(<%= @item.ratings.count %>)
+<h4>Add your ratings</h4>
+
+<%= form_with(model: [@hotel, @item, @item.ratings.build]) do |form| %>
+  <% (1..5).each do |value| %>
+    <%= form.radio_button :rate, value %> <%= value %> Star
+  <% end %>
+  <%= form.submit %>
+<% end %>
+
+
+<script>
+    $(document).ready(function () {
+        var item_id = '<%= @item.id %>'
+
+        if ('<%= @item.users.pluck(:id).include?(current_user.id) %>' == 'false') {
+            $.ajax({
+                url: item_id + "/item_user_read_status",
+                data: {id: item_id},
+                type: 'POST',
+                dataType: 'script'
+            });
+        }
+    })
+</script>

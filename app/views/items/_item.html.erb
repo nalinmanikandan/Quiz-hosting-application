@@ -1,0 +1,13 @@
+<tr>
+  <td style="color: <%= (item.users.pluck(:id).include? current_user.id) ? 'blue' : '' %>"><%= item.name %></td>
+  <td><%= item.name %></td>
+  <td><%= item.description %></td>
+  <td><%= item.hotel.name %></td>
+  <td><%= item.ratings.average(:rate) %></td>
+  <td><%= item.comments.count %></td>
+  <td><%= link_to 'Show', hotel_item_path(@hotel, item) %></td>
+  <% if current_user.id == item.user_id %>
+    <td><%= link_to 'Edit', edit_hotel_item_path(@hotel, item) %></td>
+    <td><%= link_to 'Destroy', hotel_item_path(@hotel, item), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  <% end %>
+</tr>

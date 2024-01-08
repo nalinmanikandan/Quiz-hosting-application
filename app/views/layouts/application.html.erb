@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HotelManagement</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <!-- jquery cdn link-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+
+  <body>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <% flash.each do |type, msg| %>
+    <p id="<%= type %>"><%= msg %></p>
+    <br/>
+  <% end %>
+  <% if current_user %>
+    <%= link_to 'Sign out', destroy_user_session_path, method: :delete  %>
+  <% end %>
+    <%= yield %>
+  </body>
+</html>
